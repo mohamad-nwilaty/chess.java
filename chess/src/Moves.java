@@ -134,17 +134,7 @@ public class Moves {
         }
         return false;
     }
-
-
-
-    public static boolean toBlack(int[] to){
-        return Character.isLowerCase((Game.board[to[0]][to[1]]).charAt(0)) ;
-    }
-
-    public static boolean toWhite(int[] to){
-        return Character.isUpperCase((Game.board[to[0]][to[1]]).charAt(0)) ;
-    }
-
+    
     public static boolean toEmpty(int[] to){
         return  ((Game.board[to[0]][to[1]]).charAt(0) == '.') ;
     }

@@ -1,20 +1,26 @@
 import java.util.Scanner;
+import java.util.ArrayList;
 public class Game {
     public static String board[][] = new String[8][8] ;
+    public static boolean on = true; 
+    public static ArrayList<Character> deadWhite = new ArrayList<>();
+    public static ArrayList<Character> deadBlack = new ArrayList<>();
+    public static boolean trunCount = true ;
     @SuppressWarnings("resource")
     public static void main(String[] args) throws Exception {
         Scanner input = new Scanner((System.in));
         initializeBoard();
         printBoard();
         System.out.println("enter the first move the space then the secound one \n (move in chess notation ex. e2 e4)");
-        while(true){
+        while(on){
             String from = input.next();
             String to = input.next();
             movePeice(from, to);
             printBoard();
             System.out.println();
+            
         }
-        
+
     }
 
     public static void initializeBoard(){
@@ -54,9 +60,13 @@ public class Game {
             int[] To = chessNotation(to);
     
             if (checkValid(From) && checkValid(To) && !board[From[0]][From[1]].equals(".")) {
-                if (legalMove(from, to)) {
+                if (legalMove(from, to) && turns(From)) {
+                    killWhite(To); // here since that we know that the move is legal and that we are moving a peice we check if the 
+                    killBlack(To);// move is to a peice if so we add it to a list and if its a king we break out of the loop
                     board[To[0]][To[1]] = board[From[0]][From[1]];
                     board[From[0]][From[1]] = ".";
+                    
+
                 } else {
                     System.out.println("Invalid move. Try again.");
                 }
@@ -104,5 +114,56 @@ public class Game {
         }
         
     }
+
+    public static void killWhite(int[] to){
+        char peice = board[to[0]][to[1]].charAt(0);
+
+        if(Character.isUpperCase(peice)){
+            if(peice == 'K'){
+                on = false ;
+                System.out.println("Black wins !! ");
+                printDead();
+            } 
+            deadWhite.add(peice);
+        }
+     }
+
+    public static void killBlack(int[] to){
+        char peice = board[to[0]][to[1]].charAt(0);
+        if(Character.isLowerCase(peice)){
+            if(peice == 'k'){
+                on = false ;
+                System.out.println("white wins !! ");
+                printDead();
+
+            } 
+            deadBlack.add(peice);
+        }
+    }
+    public static void printDead(){
+        System.out.println("dead white peices: ");
+        for(int i=0 ; i<deadWhite.size() ; i++){
+            System.out.print(deadWhite.get(i) + " ");
+        }
+        System.out.println("\ndead black peices: ");
+        for(int i=0 ; i<deadBlack.size() ; i++){
+            System.out.print(deadBlack.get(i) + " ");
+        }
+        System.out.println("\n the last board:\n");
+        
+    }
+    public static boolean turns(int[] from) {
+        char peice = board[from[0]][from[1]].charAt(0);
+        if(Character.isUpperCase(peice) && trunCount) {
+            trunCount = !trunCount ;
+            return true ;
+        }
+        if(Character.isLowerCase(peice) && !trunCount) {
+            trunCount = !trunCount ;
+            return true ;
+        }
+        System.out.println("not your turn !");
+        return false ;
+    }
+
 }
-// this was written via vscode on the web
